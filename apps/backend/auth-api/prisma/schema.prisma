@@ -1,0 +1,24 @@
+generator client {
+  provider      = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String    @unique @default(uuid())
+  email    String    @id @map("_id")
+  name     String    @unique
+  Password Password?
+}
+
+// Password -> One To One -> User
+model Password {
+  id   String  @id @default(uuid()) @map("_id")
+  hash String?
+
+  User    User   @relation(fields: [user_id], references: [id])
+  user_id String @unique
+}

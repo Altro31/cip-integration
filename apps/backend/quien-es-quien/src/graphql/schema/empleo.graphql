@@ -1,0 +1,15 @@
+type Empleo {
+    id: ID @id @unique
+    nombre: String
+    descripcion: String
+    salario: Float
+    requisitos: [String!]!
+    ubicacion: String
+
+    publicante: Publicante! @relationship(type: OFRECE, direction: IN, properties: "Ofrece")
+
+    aplicantes: [Perfil!]! @relationship(type: APLICA_A, direction: IN, properties: "AplicaA")
+    comentarios: [Perfil!]! @relationship(type: COMENTA_EMPLEO, direction: IN, properties: "ComentaEmpleo")
+}
+
+union Publicante = Perfil | Usuario

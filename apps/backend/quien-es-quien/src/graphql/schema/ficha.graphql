@@ -1,0 +1,20 @@
+type Ficha {
+    id: ID @id @unique
+    titulo: String
+    contenido: String
+    edicion: String
+    pagina: Int
+    tipo_edicion: String
+    seccion: String
+
+    medio: Medio! @relationship(type: PUBLICA_UNA, properties: "PublicaUna", direction: IN)
+    perfil: Perfil! @relationship(type: ESCRIBE_UNA, properties: "EscribeUna", direction: IN)
+}
+
+type PublicaUna @relationshipProperties {
+    fecha: Date
+}
+
+type EscribeUna @relationshipProperties {
+    fecha: Date
+}

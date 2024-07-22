@@ -1,0 +1,29 @@
+# Idea
+.idea
+
+# Dependencies
+node_modules
+
+# Builds
+dist
+
+# Environment vars
+.env*
+!.env.example
+
+# lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Nuxt
+.nuxt
+.output
+
+# Turbo
+.turbo
+/out
+
+# GraphQL
+types-generated.ts

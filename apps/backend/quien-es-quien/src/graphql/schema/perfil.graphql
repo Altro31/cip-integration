@@ -1,0 +1,28 @@
+type Perfil {
+    id: ID @id @unique
+    nombre: String
+
+    perfil: Usuario @relationship(type: TIENE_UN, direction: IN)
+    seguidos: [Perfil!]! @relationship(type: SIGUE_A, direction: OUT)
+    empleos_aplicados: [Empleo!]! @relationship(type: APLICA_A, properties: "AplicaA", direction: OUT)
+    empleos_comentados: [Empleo!]! @relationship(type: COMENTA_EMPLEO, properties: "ComentaEmpleo", direction: OUT)
+    empleos_publicados: [Empleo!]! @relationship(type: OFRECE, properties: "UsuarioOfrece", direction: OUT)
+    fichas_comentadas: [Ficha!]! @relationship(type: COMENTA_FICHA, properties: "ComentaFicha", direction: OUT)
+}
+
+type AplicaA @relationshipProperties {
+    fecha: Date
+}
+
+type ComentaEmpleo @relationshipProperties {
+    fecha: Date
+    contenido: String
+}
+
+type UsuarioOfrece @relationshipProperties {
+    fecha_publicacion: Date
+}
+
+type ComentaFicha @relationshipProperties {
+    fecha: Date
+}

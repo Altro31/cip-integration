@@ -1,0 +1,1 @@
+export * from './ubicar.dto'

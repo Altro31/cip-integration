@@ -1,0 +1,9 @@
+enum Direction {
+    IN
+    OUT
+}
+
+directive @relationship(type: Relationship!,direction: Direction!, properties: String) on FIELD_DEFINITION
+directive @id on FIELD_DEFINITION
+directive @unique on FIELD_DEFINITION
+directive @relationshipProperties on OBJECT

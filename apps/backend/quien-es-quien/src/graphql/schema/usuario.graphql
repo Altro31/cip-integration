@@ -1,0 +1,7 @@
+type Usuario {
+  id: ID @id @unique
+  nombre: String
+  email: String
+  rol: String
+  perfil: Perfil! @relationship(type: TIENE_UN, direction: OUT)
+}

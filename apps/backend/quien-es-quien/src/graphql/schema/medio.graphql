@@ -1,0 +1,22 @@
+type Medio {
+    id: ID @id @unique
+    nombre: String
+    descripcion: String
+    fundacion: Date
+    logo: String
+    precio: Float
+    frecuencia: String
+    alcance: String
+
+    asociados: [Medio!]! @relationship(type: ASOCIADO_A, properties: "AsociadoA", direction: OUT)
+    empleos_ofertados: [Empleo!]! @relationship(type: OFRECE, properties: "Ofrece", direction: OUT)
+    fichas_publicadas: [Ficha!]! @relationship(type: PUBLICA_UNA, properties: "PublicaUna", direction: OUT)
+}
+
+type AsociadoA @relationshipProperties {
+    desde: Date
+}
+
+type Ofrece @relationshipProperties {
+    fecha_publicacion: Date
+}

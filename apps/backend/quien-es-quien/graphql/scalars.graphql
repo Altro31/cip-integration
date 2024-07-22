@@ -1,0 +1,12 @@
+
+# Numbers
+scalar BigInt
+
+# Temporal
+scalar Date
+scalar DateTime
+scalar Duration
+scalar LocalDateTime
+scalar Time
+scalar LocalTime
+

@@ -1,0 +1,3 @@
+{
+  "extends": "@repo/typescript-config/nest/tsconfig.build.json"
+}

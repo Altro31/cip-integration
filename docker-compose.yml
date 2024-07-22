@@ -1,0 +1,166 @@
+services:
+
+  # Frontend Services
+  frontend:
+    container_name: Frontend
+    build:
+      context: frontend
+      target: production
+    env_file:
+      - path: apps/frontend/.env.production
+        required: false
+    ports:
+      - "3000:3000"
+    depends_on:
+      - qeq
+      - dir
+      - auth
+    volumes:
+      - frontend-volume:/app/assets
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://frontend:3000/hello-world || exit 1"
+        ]
+      interval: 5s
+      retries: 30
+      timeout: 5s
+
+  # Backend Services
+  qeq:
+    container_name: Quien-es-Quien
+    build:
+      context: apps/backend/quien-es-quien
+      target: qeq-production
+    env_file: apps/backend/quien-es-quien/config/.env.production
+    ports:
+      - "3010:3000"
+    depends_on:
+      auth:
+        condition: service_started
+      graph_db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://qeq:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      retries: 30
+      timeout: 20s
+    volumes:
+      - qeq-volume:/app/public
+
+  dir:
+    container_name: Directorio-Comunicacion
+    build:
+      context: apps/backend/directorio-comunicacion
+      target: dir-production
+    env_file: apps/backend/directorio-comunicacion/config/.env.production
+    ports:
+      - "3015:3000"
+    depends_on:
+      auth:
+        condition: service_started
+      graph_db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://dir:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      retries: 30
+      timeout: 20s
+    volumes:
+      - dir-volume:/app/public
+
+  auth:
+    container_name: Auth
+    build:
+      context: apps/backend/auth-api
+      target: production
+    env_file: apps/backend/auth-api/.env.production
+    ports:
+      - "3005:3000"
+    depends_on:
+      auth_bd:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://auth:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      retries: 30
+      timeout: 20s
+
+  # Database Services
+  graph_db:
+    container_name: Graph-DB
+    image: neo4j
+    ports:
+      - "7474"
+      - "17687:7687"
+    volumes:
+      - graph-volume:/data
+    env_file: .env.production
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "cypher-shell -u neo4j -p altro-neo4j \"RETURN 1;\" || exit 1"
+        ]
+      interval: 10s
+      retries: 30
+      timeout: 30s
+      start_period: 20s
+    restart: always
+
+  auth_bd:
+    image: mongo
+    container_name: Auth-DB
+    command: [ "--replSet", "rs0" ]
+    ports:
+      - "30001:27017"
+    volumes:
+      - auth-volume:/data/db
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'auth_bd:27017'}]}) }" | mongosh --port 27017 --quiet
+      # test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'auth_bd:27017',priority:1},{_id:1,host:'auth_bd_repl_1:27017',priority:0.5},{_id:2,host:'auth_bd_repl_2:27017',priority:0.5}]}) }" | mongosh --port 27017 --quiet
+      interval: 5s
+      timeout: 30s
+      retries: 30
+    # depends_on:
+    #   - auth_bd_repl_1
+    #   - auth_bd_repl_2
+
+    # auth_bd_repl_1:
+    #   image: mongo
+    #   command: [ "--replSet", "rs0" ]
+    #   ports:
+    #     - "27017"
+    #   volumes:
+    #     - auth-volume-repl1:/data/db
+
+    # auth_bd_repl_2:
+    #   image: mongo
+    #   command: [ "--replSet", "rs0" ]
+    #   ports:
+    #     - "27017"
+    #   volumes:
+    #     - auth-volume-repl2:/data/db
+
+volumes:
+  auth-volume: # auth-volume-repl1:
+
+  # auth-volume-repl2:
+  graph-volume:
+  frontend-volume:
+  qeq-volume:
+  dir-volume:
+  auth-api-volume:

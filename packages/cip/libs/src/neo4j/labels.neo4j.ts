@@ -1,0 +1,20 @@
+// Deben comenzar por ":"
+
+export type LabelsNeo4j =
+    | ':Perfil'
+    | ':Blog'
+    | ':CausaBenefica'
+    | ':CentroEstudios'
+    | ':CentroLaboral'
+    | ':Certificacion'
+    | ':Organizacion'
+    | ':Premio'
+    | ':Proyecto'
+    | ':RedSocial'
+    | ':Ubicacion'
+    | ':Imagen'
+    | ':Ficha'
+    | ':Medio'
+    | ':Empleo'
+    | ':Usuario'
+    | ':Competencia'

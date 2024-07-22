@@ -1,0 +1,12 @@
+/.idea
+/.nuxt
+/.vscode
+/.output
+/node_modules
+.env*
+*.d.ts
+.gitignore
+bun.lockb
+/README.md
+Dockerfile
+.dockerignore
